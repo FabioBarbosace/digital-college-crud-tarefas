@@ -1,3 +1,5 @@
+import bcrypt from "bcryptjs";
+
 class UserService {
   constructor(userRepository) {
     this.userRepository = userRepository;
@@ -10,6 +12,12 @@ class UserService {
   };
 
   createUser = (postedData) => {
+    postedData = {
+      username: "Fabio",
+      email: "teste@teste.com",
+      password: "123456",
+    };
+
     const { username, email, password } = postedData;
     // TODO:
     // regra de email único
@@ -18,10 +26,13 @@ class UserService {
       return { msg: "senha deve ter no mínimo 6 caracteres" };
     }
 
+    const crypto_password = bcrypt.hashSync(password, 5);
+    // Para comparar use bcrypt.compareSync(senha, senha_encriptada)
+
     const validatedUserData = {
       username: username,
       email: email,
-      password: password,
+      password: crypto_password,
     };
 
     const newUser = this.userRepository.save(validatedUserData);
